@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package proto;
+
+service DirectorService {
+  rpc StartMission (StartMissionRequest) returns (StartMissionResponse);
+  rpc UpdateOrder (OrderUpdateRequest) returns (OrderUpdateResponse);
+}
+
+service MercenaryService {
+  rpc ReportStatus (StatusReportRequest) returns (StatusReportResponse);
+}
+
+message StartMissionRequest {
+  string mission_id = 1;
+  repeated int32 mercenary_ids = 2;
+}
+
+message StartMissionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message OrderUpdateRequest {
+  int32 mercenary_id = 1;
+  string new_order = 2;
+}
+
+message OrderUpdateResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message StatusReportRequest {
+  int32 mercenary_id = 1;
+  string status = 2;
+}
+
+message StatusReportResponse {
+  bool success = 1;
+  string message = 2;
+}
