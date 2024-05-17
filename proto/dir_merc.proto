@@ -40,3 +40,27 @@ message StatusReportResponse {
   bool success = 1;
   string message = 2;
 }
+
+//namenode
+service NameNodeService {
+  rpc RegisterDecision (DecisionRequest) returns (DecisionResponse);
+  rpc GetDecisions (GetDecisionsRequest) returns (GetDecisionsResponse);
+}
+
+message DecisionRequest {
+  int32 mercenary_id = 1;
+  int32 piso = 2;
+  string decision = 3;
+}
+
+message DecisionResponse {
+  bool success = 1;
+}
+
+message GetDecisionsRequest {
+  string mercenario = 1;
+}
+
+message GetDecisionsResponse {
+  repeated string decisions = 1;
+}
