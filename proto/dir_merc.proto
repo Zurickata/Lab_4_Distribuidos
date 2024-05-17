@@ -1,42 +1,55 @@
 syntax = "proto3";
 
-package proto;
+package mercenario;
 
-service DirectorService {
-  rpc StartMission (StartMissionRequest) returns (StartMissionResponse);
-  rpc UpdateOrder (OrderUpdateRequest) returns (OrderUpdateResponse);
+option go_package = "LAB_4DISTRIBUIDOS/proto";
+
+// Servicio para la comunicación con el director
+service Director {
+  // Mercenario informa su estado de preparación
+  rpc Preparacion(Mercenario) returns (Respuesta);
+  
+  // Mercenario informa su decisión en un piso específico
+  rpc DecisionesPiso(Piso) returns (Respuesta);
+  
+  // Mercenario consulta el monto acumulado en el doshbank
+  rpc ConsultarDoshBank(Vacio) returns (Monto);
+
+  // Director envía la señal de inicio de piso a cada mercenario
+  rpc IniciarPiso(Vacio) returns (Iniciar);
+
+  // Director informa a un mercenario específico sobre su muerte
+  rpc InformarMuerte(Mercenario) returns (Respuesta);
 }
 
-service MercenaryService {
-  rpc ReportStatus (StatusReportRequest) returns (StatusReportResponse);
+// Mensaje que representa a un mercenario
+message Mercenario {
+  string nombre = 1;
+  int32 id = 2;
 }
 
-message StartMissionRequest {
-  string mission_id = 1;
-  repeated int32 mercenary_ids = 2;
+// Mensaje que representa un piso y la decisión tomada
+message Piso {
+  int32 numero = 1;
+  string decision = 2;
+  Mercenario mercenario = 3;
 }
 
-message StartMissionResponse {
-  bool success = 1;
-  string message = 2;
+// Mensaje de respuesta general
+message Respuesta {
+  string mensaje = 1;
+  bool exito = 2;
 }
 
-message OrderUpdateRequest {
-  int32 mercenary_id = 1;
-  string new_order = 2;
+// Mensaje que representa el monto en el doshbank
+message Monto {
+  int64 monto = 1;
 }
 
-message OrderUpdateResponse {
-  bool success = 1;
-  string message = 2;
-}
+// Mensaje vacío utilizado para solicitudes que no requieren parámetros
+message Vacio {}
 
-message StatusReportRequest {
-  int32 mercenary_id = 1;
-  string status = 2;
-}
-
-message StatusReportResponse {
-  bool success = 1;
-  string message = 2;
+// Mensaje para iniciar el piso
+message Iniciar {
+  string mensaje = 1;
 }
