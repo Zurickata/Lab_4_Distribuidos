@@ -3,6 +3,7 @@ package director
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 
 	pb "github.com/Zurickata/Lab_4_Distribuidos/proto"
@@ -26,7 +27,33 @@ func (s *server) UpdateOrder(ctx context.Context, req *pb.OrderUpdateRequest) (*
 	return &pb.OrderUpdateResponse{Success: true, Message: "Order updated"}, nil
 }
 
+func sendExampleDecision() {
+	conn, err := grpc.Dial("namenode:50051", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Could not connect to namenode: %v", err)
+	}
+	defer conn.Close()
+
+	client := pb.NewNameNodeServiceClient(conn)
+
+	decisionRequest := &pb.DecisionRequest{
+		Mercenario: "Felipe Güicharrousse",
+		Piso:       1,
+		Decision:   "Hola como estas",
+	}
+
+	response, err := client.RegisterDecision(context.Background(), decisionRequest)
+	if err != nil {
+		log.Fatalf("Could not register decision: %v", err)
+	}
+
+	fmt.Printf("Decision registered: %v\n", response.Success)
+}
+
 func main() {
+
+	go sendExampleDecision() // Enviar mensaje de prueba al iniciar
+
 	conn, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		fmt.Println("No se pudo crear la conexion TCP: " + err.Error())

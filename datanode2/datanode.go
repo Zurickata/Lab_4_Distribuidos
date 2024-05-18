@@ -1,6 +1,9 @@
 package main
 
 import (
+	"io/ioutil"
+	"strings"
+
 	pb "github.com/Zurickata/Lab_4_Distribuidos/proto"
 	"google.golang.org/grpc"
 
@@ -29,6 +32,27 @@ func (s *Server) StoreDecision(ctx context.Context, req *pb.DecisionRequest) (*p
 	}
 
 	return &pb.DecisionResponse{Success: true}, nil
+}
+
+func (s *Server) FetchDecisions(ctx context.Context, req *pb.FetchDecisionsRequest) (*pb.FetchDecisionsResponse, error) {
+	var decisions []string
+
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		return nil, fmt.Errorf("Could not read directory: %v", err)
+	}
+
+	for _, file := range files {
+		if strings.HasSuffix(file.Name(), ".txt") {
+			content, err := ioutil.ReadFile(file.Name())
+			if err != nil {
+				return nil, fmt.Errorf("Could not read file %s: %v", file.Name(), err)
+			}
+			decisions = append(decisions, strings.Split(string(content), "\n")...)
+		}
+	}
+
+	return &pb.FetchDecisionsResponse{Decisions: decisions}, nil
 }
 
 func main() {

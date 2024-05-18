@@ -30,14 +30,29 @@ func (s *Server) RegisterDecision(ctx context.Context, req *pb.DecisionRequest) 
 		return nil, fmt.Errorf("Could not store decision: %v", err)
 	}
 
-	// Registrar decisión
-
 	return &pb.DecisionResponse{Success: true}, nil
 }
 
 func (s *Server) GetDecisions(ctx context.Context, req *pb.GetDecisionsRequest) (*pb.GetDecisionsResponse, error) {
-	// Lógica para obtener decisiones
-	return &pb.GetDecisionsResponse{Decisions: []string{}}, nil
+	var allDecisions []string
+
+	for _, dataNodeAddress := range s.dataNodeAddresses {
+		conn, err := grpc.Dial(dataNodeAddress, grpc.WithInsecure())
+		if err != nil {
+			return nil, fmt.Errorf("Could not connect to datanode: %v", err)
+		}
+		defer conn.Close()
+
+		client := pb.NewDataNodeServiceClient(conn)
+		response, err := client.FetchDecisions(ctx, &pb.FetchDecisionsRequest{})
+		if err != nil {
+			return nil, fmt.Errorf("Could not fetch decisions from datanode: %v", err)
+		}
+
+		allDecisions = append(allDecisions, response.Decisions...)
+	}
+
+	return &pb.GetDecisionsResponse{Decisions: allDecisions}, nil
 }
 
 func main() {
