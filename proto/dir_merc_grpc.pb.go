@@ -22,16 +22,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DirectorClient interface {
-	// Mercenario informa su estado de preparación
-	Preparacion(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Respuesta, error)
-	// Mercenario informa su decisión en un piso específico
-	DecisionesPiso(ctx context.Context, in *Piso, opts ...grpc.CallOption) (*Respuesta, error)
-	// Mercenario consulta el monto acumulado en el doshbank
-	ConsultarDoshBank(ctx context.Context, in *Vacio, opts ...grpc.CallOption) (*Monto, error)
-	// Director envía la señal de inicio de piso a cada mercenario
-	IniciarPiso(ctx context.Context, in *Vacio, opts ...grpc.CallOption) (*Iniciar, error)
-	// Director informa a un mercenario específico sobre su muerte
-	InformarMuerte(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Respuesta, error)
+	Preparacion(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Response, error)
+	InicioPiso(ctx context.Context, in *Piso, opts ...grpc.CallOption) (*Response, error)
+	DecisionesPiso(ctx context.Context, in *Piso, opts ...grpc.CallOption) (*Response, error)
+	ConsultarDoshBank(ctx context.Context, in *Vacio, opts ...grpc.CallOption) (*DoshBank, error)
+	ListoParaSiguientePiso(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Response, error)
 }
 
 type directorClient struct {
@@ -42,8 +37,8 @@ func NewDirectorClient(cc grpc.ClientConnInterface) DirectorClient {
 	return &directorClient{cc}
 }
 
-func (c *directorClient) Preparacion(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Respuesta, error) {
-	out := new(Respuesta)
+func (c *directorClient) Preparacion(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/mercenario.Director/Preparacion", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -51,8 +46,17 @@ func (c *directorClient) Preparacion(ctx context.Context, in *Mercenario, opts .
 	return out, nil
 }
 
-func (c *directorClient) DecisionesPiso(ctx context.Context, in *Piso, opts ...grpc.CallOption) (*Respuesta, error) {
-	out := new(Respuesta)
+func (c *directorClient) InicioPiso(ctx context.Context, in *Piso, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/mercenario.Director/InicioPiso", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *directorClient) DecisionesPiso(ctx context.Context, in *Piso, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
 	err := c.cc.Invoke(ctx, "/mercenario.Director/DecisionesPiso", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -60,8 +64,8 @@ func (c *directorClient) DecisionesPiso(ctx context.Context, in *Piso, opts ...g
 	return out, nil
 }
 
-func (c *directorClient) ConsultarDoshBank(ctx context.Context, in *Vacio, opts ...grpc.CallOption) (*Monto, error) {
-	out := new(Monto)
+func (c *directorClient) ConsultarDoshBank(ctx context.Context, in *Vacio, opts ...grpc.CallOption) (*DoshBank, error) {
+	out := new(DoshBank)
 	err := c.cc.Invoke(ctx, "/mercenario.Director/ConsultarDoshBank", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -69,18 +73,9 @@ func (c *directorClient) ConsultarDoshBank(ctx context.Context, in *Vacio, opts 
 	return out, nil
 }
 
-func (c *directorClient) IniciarPiso(ctx context.Context, in *Vacio, opts ...grpc.CallOption) (*Iniciar, error) {
-	out := new(Iniciar)
-	err := c.cc.Invoke(ctx, "/mercenario.Director/IniciarPiso", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *directorClient) InformarMuerte(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Respuesta, error) {
-	out := new(Respuesta)
-	err := c.cc.Invoke(ctx, "/mercenario.Director/InformarMuerte", in, out, opts...)
+func (c *directorClient) ListoParaSiguientePiso(ctx context.Context, in *Mercenario, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/mercenario.Director/ListoParaSiguientePiso", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -91,16 +86,11 @@ func (c *directorClient) InformarMuerte(ctx context.Context, in *Mercenario, opt
 // All implementations must embed UnimplementedDirectorServer
 // for forward compatibility
 type DirectorServer interface {
-	// Mercenario informa su estado de preparación
-	Preparacion(context.Context, *Mercenario) (*Respuesta, error)
-	// Mercenario informa su decisión en un piso específico
-	DecisionesPiso(context.Context, *Piso) (*Respuesta, error)
-	// Mercenario consulta el monto acumulado en el doshbank
-	ConsultarDoshBank(context.Context, *Vacio) (*Monto, error)
-	// Director envía la señal de inicio de piso a cada mercenario
-	IniciarPiso(context.Context, *Vacio) (*Iniciar, error)
-	// Director informa a un mercenario específico sobre su muerte
-	InformarMuerte(context.Context, *Mercenario) (*Respuesta, error)
+	Preparacion(context.Context, *Mercenario) (*Response, error)
+	InicioPiso(context.Context, *Piso) (*Response, error)
+	DecisionesPiso(context.Context, *Piso) (*Response, error)
+	ConsultarDoshBank(context.Context, *Vacio) (*DoshBank, error)
+	ListoParaSiguientePiso(context.Context, *Mercenario) (*Response, error)
 	mustEmbedUnimplementedDirectorServer()
 }
 
@@ -108,20 +98,20 @@ type DirectorServer interface {
 type UnimplementedDirectorServer struct {
 }
 
-func (UnimplementedDirectorServer) Preparacion(context.Context, *Mercenario) (*Respuesta, error) {
+func (UnimplementedDirectorServer) Preparacion(context.Context, *Mercenario) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Preparacion not implemented")
 }
-func (UnimplementedDirectorServer) DecisionesPiso(context.Context, *Piso) (*Respuesta, error) {
+func (UnimplementedDirectorServer) InicioPiso(context.Context, *Piso) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InicioPiso not implemented")
+}
+func (UnimplementedDirectorServer) DecisionesPiso(context.Context, *Piso) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecisionesPiso not implemented")
 }
-func (UnimplementedDirectorServer) ConsultarDoshBank(context.Context, *Vacio) (*Monto, error) {
+func (UnimplementedDirectorServer) ConsultarDoshBank(context.Context, *Vacio) (*DoshBank, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConsultarDoshBank not implemented")
 }
-func (UnimplementedDirectorServer) IniciarPiso(context.Context, *Vacio) (*Iniciar, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IniciarPiso not implemented")
-}
-func (UnimplementedDirectorServer) InformarMuerte(context.Context, *Mercenario) (*Respuesta, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InformarMuerte not implemented")
+func (UnimplementedDirectorServer) ListoParaSiguientePiso(context.Context, *Mercenario) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListoParaSiguientePiso not implemented")
 }
 func (UnimplementedDirectorServer) mustEmbedUnimplementedDirectorServer() {}
 
@@ -150,6 +140,24 @@ func _Director_Preparacion_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DirectorServer).Preparacion(ctx, req.(*Mercenario))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Director_InicioPiso_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Piso)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DirectorServer).InicioPiso(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercenario.Director/InicioPiso",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DirectorServer).InicioPiso(ctx, req.(*Piso))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -190,38 +198,20 @@ func _Director_ConsultarDoshBank_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Director_IniciarPiso_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Vacio)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DirectorServer).IniciarPiso(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/mercenario.Director/IniciarPiso",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DirectorServer).IniciarPiso(ctx, req.(*Vacio))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Director_InformarMuerte_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Director_ListoParaSiguientePiso_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Mercenario)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DirectorServer).InformarMuerte(ctx, in)
+		return srv.(DirectorServer).ListoParaSiguientePiso(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/mercenario.Director/InformarMuerte",
+		FullMethod: "/mercenario.Director/ListoParaSiguientePiso",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DirectorServer).InformarMuerte(ctx, req.(*Mercenario))
+		return srv.(DirectorServer).ListoParaSiguientePiso(ctx, req.(*Mercenario))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -238,6 +228,10 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Director_Preparacion_Handler,
 		},
 		{
+			MethodName: "InicioPiso",
+			Handler:    _Director_InicioPiso_Handler,
+		},
+		{
 			MethodName: "DecisionesPiso",
 			Handler:    _Director_DecisionesPiso_Handler,
 		},
@@ -246,12 +240,8 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Director_ConsultarDoshBank_Handler,
 		},
 		{
-			MethodName: "IniciarPiso",
-			Handler:    _Director_IniciarPiso_Handler,
-		},
-		{
-			MethodName: "InformarMuerte",
-			Handler:    _Director_InformarMuerte_Handler,
+			MethodName: "ListoParaSiguientePiso",
+			Handler:    _Director_ListoParaSiguientePiso_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
