@@ -6,11 +6,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - "50051:50051"
-    links:
-      - rabbitmq
-
-  rabbitmq:
-    image: rabbitmq:3.13-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
