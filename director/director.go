@@ -131,10 +131,24 @@ func main() {
     }
 
     go sendExampleDecision()
-    pb.RegisterDirectorServiceServer(grpcServer, &server2{})
 
-    if err = grpcServer.Serve(lis); err != nil {
-		fmt.Println("No se pudo levantar el servidor: " + err.Error())
+    lis2, err2 := net.Listen("tcp", ":50050")
+    if err != nil {
+        log.Fatalf("failed to listen: %v", err)
+    }
+    
+    log.Println("Servidor en ejecución en el puerto 50051...")
+
+    grpcServer2 := grpc.NewServer()
+    pb.RegisterDirectorServer(grpcServer2, &server{
+        mercenarios: make(map[int32]*pb.Mercenario),
+        muertos:     make(map[int32]bool),
+    })
+
+    pb.RegisterDirectorServiceServer(grpcServer2, &server2{})
+
+    if err2 = grpcServer.Serve(lis2); err2 != nil {
+		fmt.Println("No se pudo levantar el servidor: " + err2.Error())
 	}
 
 }

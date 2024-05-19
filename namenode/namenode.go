@@ -39,14 +39,14 @@ func (s *Server) GetDecisions(ctx context.Context, req *pb.GetDecisionsRequest) 
 	for _, dataNodeAddress := range s.dataNodeAddresses {
 		conn, err := grpc.Dial(dataNodeAddress, grpc.WithInsecure())
 		if err != nil {
-			return nil, fmt.Errorf("Could not connect to datanode: %v", err)
+			return nil, fmt.Errorf("could not connect to datanode: %v", err)
 		}
 		defer conn.Close()
 
 		client := pb.NewDataNodeServiceClient(conn)
 		response, err := client.FetchDecisions(ctx, &pb.FetchDecisionsRequest{})
 		if err != nil {
-			return nil, fmt.Errorf("Could not fetch decisions from datanode: %v", err)
+			return nil, fmt.Errorf("could not fetch decisions from datanode: %v", err)
 		}
 
 		allDecisions = append(allDecisions, response.Decisions...)
@@ -56,7 +56,7 @@ func (s *Server) GetDecisions(ctx context.Context, req *pb.GetDecisionsRequest) 
 }
 
 func main() {
-	listener, err := net.Listen("tcp", ":50051")
+	listener, err := net.Listen("tcp", ":50050")
 	if err != nil {
 		log.Fatalf("Failed to listen on port 50051: %v", err)
 		return
