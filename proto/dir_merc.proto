@@ -12,6 +12,21 @@ service Director {
     rpc ListoParaSiguientePiso (Mercenario) returns (Response);
 }
 
+service NameNodeService {
+  rpc RegisterDecision(DecisionRequest) returns (DecisionResponse);
+  rpc GetDecisions(GetDecisionsRequest) returns (GetDecisionsResponse);
+}
+
+service DataNodeService {
+  rpc StoreDecision(DecisionRequest) returns (DecisionResponse);
+  rpc FetchDecisions(FetchDecisionsRequest) returns (FetchDecisionsResponse);
+}
+
+service DirectorService {
+  rpc StartMission(StartMissionRequest) returns (StartMissionResponse);
+  rpc UpdateOrder(OrderUpdateRequest) returns (OrderUpdateResponse);
+}
+
 message Mercenario {
     string nombre = 1;
     int32 id = 2;
@@ -31,4 +46,43 @@ message Vacio {}
 
 message DoshBank {
     int32 monto = 1;
+}
+
+message DecisionRequest {
+  string Mercenario = 1;
+  int32 Piso = 2;
+  string Decision = 3;
+}
+
+message DecisionResponse {
+  bool Success = 1;
+}
+
+message GetDecisionsRequest {}
+
+message GetDecisionsResponse {
+  repeated string Decisions = 1;
+}
+
+message FetchDecisionsRequest {}
+
+message FetchDecisionsResponse {
+  repeated string Decisions = 1;
+}
+
+message StartMissionRequest {
+  string MissionId = 1;
+  repeated int32 MercenaryIds = 2;
+}
+
+message StartMissionResponse {}
+
+message OrderUpdateRequest {
+  int32 MercenaryId = 1;
+  string NewOrder = 2;
+}
+
+message OrderUpdateResponse {
+  bool Success = 1;
+  string Message = 2;
 }

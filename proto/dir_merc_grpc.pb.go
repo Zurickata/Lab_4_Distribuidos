@@ -247,3 +247,369 @@ var Director_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/dir_merc.proto",
 }
+
+// NameNodeServiceClient is the client API for NameNodeService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type NameNodeServiceClient interface {
+	RegisterDecision(ctx context.Context, in *DecisionRequest, opts ...grpc.CallOption) (*DecisionResponse, error)
+	GetDecisions(ctx context.Context, in *GetDecisionsRequest, opts ...grpc.CallOption) (*GetDecisionsResponse, error)
+}
+
+type nameNodeServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewNameNodeServiceClient(cc grpc.ClientConnInterface) NameNodeServiceClient {
+	return &nameNodeServiceClient{cc}
+}
+
+func (c *nameNodeServiceClient) RegisterDecision(ctx context.Context, in *DecisionRequest, opts ...grpc.CallOption) (*DecisionResponse, error) {
+	out := new(DecisionResponse)
+	err := c.cc.Invoke(ctx, "/mercenario.NameNodeService/RegisterDecision", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nameNodeServiceClient) GetDecisions(ctx context.Context, in *GetDecisionsRequest, opts ...grpc.CallOption) (*GetDecisionsResponse, error) {
+	out := new(GetDecisionsResponse)
+	err := c.cc.Invoke(ctx, "/mercenario.NameNodeService/GetDecisions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// NameNodeServiceServer is the server API for NameNodeService service.
+// All implementations must embed UnimplementedNameNodeServiceServer
+// for forward compatibility
+type NameNodeServiceServer interface {
+	RegisterDecision(context.Context, *DecisionRequest) (*DecisionResponse, error)
+	GetDecisions(context.Context, *GetDecisionsRequest) (*GetDecisionsResponse, error)
+	mustEmbedUnimplementedNameNodeServiceServer()
+}
+
+// UnimplementedNameNodeServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedNameNodeServiceServer struct {
+}
+
+func (UnimplementedNameNodeServiceServer) RegisterDecision(context.Context, *DecisionRequest) (*DecisionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterDecision not implemented")
+}
+func (UnimplementedNameNodeServiceServer) GetDecisions(context.Context, *GetDecisionsRequest) (*GetDecisionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDecisions not implemented")
+}
+func (UnimplementedNameNodeServiceServer) mustEmbedUnimplementedNameNodeServiceServer() {}
+
+// UnsafeNameNodeServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to NameNodeServiceServer will
+// result in compilation errors.
+type UnsafeNameNodeServiceServer interface {
+	mustEmbedUnimplementedNameNodeServiceServer()
+}
+
+func RegisterNameNodeServiceServer(s grpc.ServiceRegistrar, srv NameNodeServiceServer) {
+	s.RegisterService(&NameNodeService_ServiceDesc, srv)
+}
+
+func _NameNodeService_RegisterDecision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecisionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NameNodeServiceServer).RegisterDecision(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercenario.NameNodeService/RegisterDecision",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NameNodeServiceServer).RegisterDecision(ctx, req.(*DecisionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _NameNodeService_GetDecisions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDecisionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NameNodeServiceServer).GetDecisions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercenario.NameNodeService/GetDecisions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NameNodeServiceServer).GetDecisions(ctx, req.(*GetDecisionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// NameNodeService_ServiceDesc is the grpc.ServiceDesc for NameNodeService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var NameNodeService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "mercenario.NameNodeService",
+	HandlerType: (*NameNodeServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RegisterDecision",
+			Handler:    _NameNodeService_RegisterDecision_Handler,
+		},
+		{
+			MethodName: "GetDecisions",
+			Handler:    _NameNodeService_GetDecisions_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dir_merc.proto",
+}
+
+// DataNodeServiceClient is the client API for DataNodeService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type DataNodeServiceClient interface {
+	StoreDecision(ctx context.Context, in *DecisionRequest, opts ...grpc.CallOption) (*DecisionResponse, error)
+	FetchDecisions(ctx context.Context, in *FetchDecisionsRequest, opts ...grpc.CallOption) (*FetchDecisionsResponse, error)
+}
+
+type dataNodeServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewDataNodeServiceClient(cc grpc.ClientConnInterface) DataNodeServiceClient {
+	return &dataNodeServiceClient{cc}
+}
+
+func (c *dataNodeServiceClient) StoreDecision(ctx context.Context, in *DecisionRequest, opts ...grpc.CallOption) (*DecisionResponse, error) {
+	out := new(DecisionResponse)
+	err := c.cc.Invoke(ctx, "/mercenario.DataNodeService/StoreDecision", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dataNodeServiceClient) FetchDecisions(ctx context.Context, in *FetchDecisionsRequest, opts ...grpc.CallOption) (*FetchDecisionsResponse, error) {
+	out := new(FetchDecisionsResponse)
+	err := c.cc.Invoke(ctx, "/mercenario.DataNodeService/FetchDecisions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DataNodeServiceServer is the server API for DataNodeService service.
+// All implementations must embed UnimplementedDataNodeServiceServer
+// for forward compatibility
+type DataNodeServiceServer interface {
+	StoreDecision(context.Context, *DecisionRequest) (*DecisionResponse, error)
+	FetchDecisions(context.Context, *FetchDecisionsRequest) (*FetchDecisionsResponse, error)
+	mustEmbedUnimplementedDataNodeServiceServer()
+}
+
+// UnimplementedDataNodeServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedDataNodeServiceServer struct {
+}
+
+func (UnimplementedDataNodeServiceServer) StoreDecision(context.Context, *DecisionRequest) (*DecisionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StoreDecision not implemented")
+}
+func (UnimplementedDataNodeServiceServer) FetchDecisions(context.Context, *FetchDecisionsRequest) (*FetchDecisionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchDecisions not implemented")
+}
+func (UnimplementedDataNodeServiceServer) mustEmbedUnimplementedDataNodeServiceServer() {}
+
+// UnsafeDataNodeServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DataNodeServiceServer will
+// result in compilation errors.
+type UnsafeDataNodeServiceServer interface {
+	mustEmbedUnimplementedDataNodeServiceServer()
+}
+
+func RegisterDataNodeServiceServer(s grpc.ServiceRegistrar, srv DataNodeServiceServer) {
+	s.RegisterService(&DataNodeService_ServiceDesc, srv)
+}
+
+func _DataNodeService_StoreDecision_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecisionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataNodeServiceServer).StoreDecision(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercenario.DataNodeService/StoreDecision",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataNodeServiceServer).StoreDecision(ctx, req.(*DecisionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DataNodeService_FetchDecisions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchDecisionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataNodeServiceServer).FetchDecisions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercenario.DataNodeService/FetchDecisions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataNodeServiceServer).FetchDecisions(ctx, req.(*FetchDecisionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// DataNodeService_ServiceDesc is the grpc.ServiceDesc for DataNodeService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var DataNodeService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "mercenario.DataNodeService",
+	HandlerType: (*DataNodeServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "StoreDecision",
+			Handler:    _DataNodeService_StoreDecision_Handler,
+		},
+		{
+			MethodName: "FetchDecisions",
+			Handler:    _DataNodeService_FetchDecisions_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dir_merc.proto",
+}
+
+// DirectorServiceClient is the client API for DirectorService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type DirectorServiceClient interface {
+	StartMission(ctx context.Context, in *StartMissionRequest, opts ...grpc.CallOption) (*StartMissionResponse, error)
+	UpdateOrder(ctx context.Context, in *OrderUpdateRequest, opts ...grpc.CallOption) (*OrderUpdateResponse, error)
+}
+
+type directorServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewDirectorServiceClient(cc grpc.ClientConnInterface) DirectorServiceClient {
+	return &directorServiceClient{cc}
+}
+
+func (c *directorServiceClient) StartMission(ctx context.Context, in *StartMissionRequest, opts ...grpc.CallOption) (*StartMissionResponse, error) {
+	out := new(StartMissionResponse)
+	err := c.cc.Invoke(ctx, "/mercenario.DirectorService/StartMission", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *directorServiceClient) UpdateOrder(ctx context.Context, in *OrderUpdateRequest, opts ...grpc.CallOption) (*OrderUpdateResponse, error) {
+	out := new(OrderUpdateResponse)
+	err := c.cc.Invoke(ctx, "/mercenario.DirectorService/UpdateOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// DirectorServiceServer is the server API for DirectorService service.
+// All implementations must embed UnimplementedDirectorServiceServer
+// for forward compatibility
+type DirectorServiceServer interface {
+	StartMission(context.Context, *StartMissionRequest) (*StartMissionResponse, error)
+	UpdateOrder(context.Context, *OrderUpdateRequest) (*OrderUpdateResponse, error)
+	mustEmbedUnimplementedDirectorServiceServer()
+}
+
+// UnimplementedDirectorServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedDirectorServiceServer struct {
+}
+
+func (UnimplementedDirectorServiceServer) StartMission(context.Context, *StartMissionRequest) (*StartMissionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartMission not implemented")
+}
+func (UnimplementedDirectorServiceServer) UpdateOrder(context.Context, *OrderUpdateRequest) (*OrderUpdateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrder not implemented")
+}
+func (UnimplementedDirectorServiceServer) mustEmbedUnimplementedDirectorServiceServer() {}
+
+// UnsafeDirectorServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to DirectorServiceServer will
+// result in compilation errors.
+type UnsafeDirectorServiceServer interface {
+	mustEmbedUnimplementedDirectorServiceServer()
+}
+
+func RegisterDirectorServiceServer(s grpc.ServiceRegistrar, srv DirectorServiceServer) {
+	s.RegisterService(&DirectorService_ServiceDesc, srv)
+}
+
+func _DirectorService_StartMission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartMissionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DirectorServiceServer).StartMission(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercenario.DirectorService/StartMission",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DirectorServiceServer).StartMission(ctx, req.(*StartMissionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DirectorService_UpdateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OrderUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DirectorServiceServer).UpdateOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mercenario.DirectorService/UpdateOrder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DirectorServiceServer).UpdateOrder(ctx, req.(*OrderUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// DirectorService_ServiceDesc is the grpc.ServiceDesc for DirectorService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var DirectorService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "mercenario.DirectorService",
+	HandlerType: (*DirectorServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "StartMission",
+			Handler:    _DirectorService_StartMission_Handler,
+		},
+		{
+			MethodName: "UpdateOrder",
+			Handler:    _DirectorService_UpdateOrder_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "proto/dir_merc.proto",
+}
