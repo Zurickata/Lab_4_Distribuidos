@@ -1,4 +1,4 @@
-package director
+package main
 
 import (
 	"context"

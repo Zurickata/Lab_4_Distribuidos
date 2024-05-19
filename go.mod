@@ -1,6 +1,6 @@
 module github.com/Zurickata/Lab_4_Distribuidos
 
-go 1.22.2
+go 1.22
 
 replace github.com/Zurickata/Lab_4_Distribuidos/proto => ../proto
 
