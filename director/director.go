@@ -7,6 +7,7 @@ import (
 	"net"
 
 	pb "github.com/Zurickata/Lab_4_Distribuidos/proto"
+
 	"google.golang.org/grpc"
 )
 
@@ -27,6 +28,7 @@ func (s *server) UpdateOrder(ctx context.Context, req *pb.OrderUpdateRequest) (*
 	return &pb.OrderUpdateResponse{Success: true, Message: "Order updated"}, nil
 }
 
+// Mensaje d prueba
 func sendExampleDecision() {
 	conn, err := grpc.Dial("namenode:50051", grpc.WithInsecure())
 	if err != nil {
@@ -57,7 +59,6 @@ func main() {
 	conn, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		fmt.Println("No se pudo crear la conexion TCP: " + err.Error())
-		return
 	}
 	serv := grpc.NewServer()
 	pb.RegisterDirectorServiceServer(serv, &server{})
@@ -65,6 +66,5 @@ func main() {
 	fmt.Println("Director server is running on port 50051...")
 	if err = serv.Serve(conn); err != nil {
 		fmt.Println("No se pudo levantar el servidor: " + err.Error())
-		return
 	}
 }
