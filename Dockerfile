@@ -12,8 +12,7 @@ COPY director/director.go .
 COPY datanode1/datanode.go .
 COPY datanode2/datanode.go .
 COPY datanode3/datanode.go .
-COPY mercenarios/mercenario_bot.go .
-COPY mercenarios/mercenario_user.go .
+COPY mercenarios/main.go .
 COPY namenode/namenode.go .
 
 # Compilamos el binario para Linux

@@ -20,6 +20,11 @@ type server struct {
     pisoActual  int32
     ready       int
     muertos     map[int32]bool
+}
+
+type server2 struct {
+	pb.UnimplementedDirectorServiceServer
+}
 
 func (s *server) Preparacion(ctx context.Context, mercenario *pb.Mercenario) (*pb.Response, error) {
     s.mu.Lock()
@@ -176,6 +181,7 @@ func (s *server) StartMission(ctx context.Context, req *pb.StartMissionRequest) 
 func (s *server) UpdateOrder(ctx context.Context, req *pb.OrderUpdateRequest) (*pb.OrderUpdateResponse, error) {
 	fmt.Printf("Updating order for mercenary %d: %s\n", req.MercenaryId, req.NewOrder)
 	// Implementar lógica para actualizar órdenes
+	return &pb.OrderUpdateResponse{Success: true, Message: "Order updated"}, nil
 }
 
 // Mensaje d prueba
