@@ -2,7 +2,10 @@ module github.com/Zurickata/Lab_4_Distribuidos
 
 go 1.22
 
-replace github.com/Zurickata/Lab_4_Distribuidos/proto => ../proto
+replace (
+	github.com/Zurickata/Lab_4_Distribuidos/mercenarios => ../mercenarios
+	github.com/Zurickata/Lab_4_Distribuidos/proto => ../proto
+)
 
 require (
 	google.golang.org/grpc v1.64.0

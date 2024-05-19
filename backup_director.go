@@ -9,10 +9,8 @@ import (
     "sync"
     "math/rand"
     "time"
-    "fmt"
 )
 
-//Zurickata
 type server struct {
     pb.UnimplementedDirectorServer
     mercenarios map[int32]*pb.Mercenario
@@ -20,6 +18,7 @@ type server struct {
     pisoActual  int32
     ready       int
     muertos     map[int32]bool
+}
 
 func (s *server) Preparacion(ctx context.Context, mercenario *pb.Mercenario) (*pb.Response, error) {
     s.mu.Lock()
@@ -124,14 +123,6 @@ func main() {
     if err := grpcServer.Serve(lis); err != nil {
         log.Fatalf("failed to serve: %v", err)
     }
-
-    go sendExampleDecision()
-    pb.RegisterDirectorServiceServer(grpcServer, &server2{})
-
-    if err = grpcServer.Serve(lis); err != nil {
-		fmt.Println("No se pudo levantar el servidor: " + err.Error())
-	}
-
 }
 
 // Función para generar un número aleatorio dentro de un rango
@@ -163,41 +154,4 @@ func numsAleatorios() (int, int) {
 	}
     
     return menor, mayor
-}
-
-//Otro Director
-func (s *server) StartMission(ctx context.Context, req *pb.StartMissionRequest) (*pb.StartMissionResponse, error) {
-	// Implementar lógica de inicio de misión
-	fmt.Printf("Starting mission %s for mercenaries: %v\n", req.MissionId, req.MercenaryIds)
-
-	return &pb.StartMissionResponse{}, nil
-}
-
-func (s *server) UpdateOrder(ctx context.Context, req *pb.OrderUpdateRequest) (*pb.OrderUpdateResponse, error) {
-	fmt.Printf("Updating order for mercenary %d: %s\n", req.MercenaryId, req.NewOrder)
-	// Implementar lógica para actualizar órdenes
-}
-
-// Mensaje d prueba
-func sendExampleDecision() {
-	conn, err := grpc.Dial("namenode:50051", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("Could not connect to namenode: %v", err)
-	}
-	defer conn.Close()
-
-	client := pb.NewNameNodeServiceClient(conn)
-
-	decisionRequest := &pb.DecisionRequest{
-		Mercenario: "Felipe Güicharrousse",
-		Piso:       1,
-		Decision:   "Hola como estas",
-	}
-
-	response, err := client.RegisterDecision(context.Background(), decisionRequest)
-	if err != nil {
-		log.Fatalf("Could not register decision: %v", err)
-	}
-
-	fmt.Printf("Decision registered: %v\n", response.Success)
 }
